@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>React Project Roadmap</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --border: #1e1e2e;
+    --accent: #7c5cfc;
+    --accent2: #fc5c7d;
+    --accent3: #5cfcb0;
+    --yellow: #fcd95c;
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --card: #13131c;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    padding: 48px 20px 80px;
+    overflow-x: hidden;
+  }
+  body::before {
+    content:'';
+    position:fixed; top:-200px; left:-200px;
+    width:600px; height:600px;
+    background: radial-gradient(circle, rgba(124,92,252,0.13) 0%, transparent 70%);
+    pointer-events:none;
+    animation: drift 9s ease-in-out infinite alternate;
+  }
+  body::after {
+    content:'';
+    position:fixed; bottom:-200px; right:-200px;
+    width:500px; height:500px;
+    background: radial-gradient(circle, rgba(252,92,125,0.09) 0%, transparent 70%);
+    pointer-events:none;
+    animation: drift 11s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift { from{transform:translate(0,0)} to{transform:translate(40px,30px)} }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  .container { max-width:880px; margin:0 auto; position:relative; z-index:1; }
+
+  .eyebrow {
+    font-size:11px; letter-spacing:3px; text-transform:uppercase;
+    color:var(--accent); margin-bottom:14px;
+  }
+  h1 {
+    font-family:'Syne',sans-serif;
+    font-size: clamp(30px,6vw,52px);
+    font-weight:800; line-height:1.08;
+  }
+  h1 span {
+    background: linear-gradient(130deg, var(--accent), var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+  .subtitle { margin-top:14px; color:var(--muted); font-size:13px; line-height:1.75; max-width:600px; }
+
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:18px; }
+  .chip {
+    font-size:11px; padding:4px 13px; border-radius:100px;
+    border:1px solid rgba(92,252,176,0.25); color:var(--accent3); letter-spacing:1px;
+  }
+
+  .tabs { display:flex; gap:4px; margin:48px 0 28px; border-bottom:1px solid var(--border); }
+  .tab {
+    font-family:'DM Mono',monospace; font-size:12px; letter-spacing:1px;
+    text-transform:uppercase; padding:10px 18px; cursor:pointer;
+    color:var(--muted); background:none; border:none;
+    border-bottom:2px solid transparent; margin-bottom:-1px;
+    transition: color .2s, border-color .2s;
+  }
+  .tab.active { color:var(--text); border-bottom-color:var(--accent); }
+  .tab:hover:not(.active) { color:var(--text); }
+
+  .tab-panel { display:none; animation: fadeUp .35s ease both; }
+  .tab-panel.active { display:block; }
+
+  .projects { display:grid; gap:20px; }
+  .project-card {
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:28px 28px 24px;
+    cursor:pointer;
+    transition: border-color .2s, transform .2s;
+    position:relative; overflow:hidden;
+  }
+  .project-card::before {
+    content:''; position:absolute; top:0; left:0; right:0; height:3px;
+    background: var(--card-accent, var(--accent));
+    border-radius:16px 16px 0 0;
+  }
+  .project-card:hover { border-color: rgba(124,92,252,0.4); transform:translateY(-2px); }
+  .project-card.open .expand-body { display:block; }
+  .project-card.open .arrow { transform:rotate(180deg); }
+
+  .card-header { display:flex; align-items:flex-start; gap:16px; }
+  .card-icon { font-size:28px; flex-shrink:0; }
+  .card-meta { flex:1; }
+  .card-title {
+    font-family:'Syne',sans-serif; font-size:18px; font-weight:700;
+    line-height:1.2; margin-bottom:6px;
+  }
+  .card-desc { font-size:12px; color:var(--muted); line-height:1.7; }
+  .arrow { margin-left:auto; font-size:18px; color:var(--muted); transition:transform .25s; flex-shrink:0; }
+
+  .badges { display:flex; flex-wrap:wrap; gap:6px; margin-top:14px; }
+  .badge {
+    font-size:10px; padding:3px 10px; border-radius:100px;
+    letter-spacing:.8px; text-transform:uppercase; font-weight:500;
+  }
+  .badge.impact { background:rgba(124,92,252,0.15); color:var(--accent); border:1px solid rgba(124,92,252,0.3); }
+  .badge.diff-easy { background:rgba(92,252,176,0.1); color:var(--accent3); border:1px solid rgba(92,252,176,0.25); }
+  .badge.diff-med { background:rgba(252,217,92,0.1); color:var(--yellow); border:1px solid rgba(252,217,92,0.25); }
+  .badge.diff-hard { background:rgba(252,92,125,0.1); color:var(--accent2); border:1px solid rgba(252,92,125,0.25); }
+  .badge.time { background:rgba(255,255,255,0.05); color:var(--muted); border:1px solid var(--border); }
+
+  .expand-body { display:none; margin-top:22px; border-top:1px solid var(--border); padding-top:22px; }
+
+  .section-label {
+    font-size:10px; letter-spacing:2px; text-transform:uppercase;
+    color:var(--muted); margin-bottom:10px;
+  }
+  .feature-list { list-style:none; display:grid; gap:7px; margin-bottom:20px; }
+  .feature-list li {
+    font-size:12px; color:#c0c0d0; line-height:1.6;
+    padding-left:18px; position:relative;
+  }
+  .feature-list li::before {
+    content:'▸'; position:absolute; left:0; color:var(--accent); font-size:10px;
+  }
+
+  .skills-used { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:20px; }
+  .skill-tag {
+    font-size:10px; padding:3px 10px; border-radius:6px;
+    background:rgba(255,255,255,0.04); border:1px solid var(--border);
+    color:var(--muted); letter-spacing:.5px;
+  }
+
+  .recruiter-box {
+    background:rgba(124,92,252,0.07);
+    border:1px solid rgba(124,92,252,0.2);
+    border-radius:10px; padding:14px 16px;
+  }
+  .recruiter-box p { font-size:12px; color:#c0b8f0; line-height:1.7; }
+  .recruiter-box strong { color:var(--accent); }
+
+  .table-wrap { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th {
+    font-family:'Syne',sans-serif; font-size:11px; letter-spacing:2px;
+    text-transform:uppercase; color:var(--muted);
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  td { padding:14px 14px; border-bottom:1px solid rgba(30,30,46,0.6); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(124,92,252,0.04); }
+  .proj-name { font-family:'Syne',sans-serif; font-weight:700; font-size:13px; }
+  .star { color:var(--yellow); font-size:13px; }
+  .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+  .dot.high { background:var(--accent3); }
+  .dot.med  { background:var(--yellow); }
+
+  .tips-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; }
+  .tip-card {
+    background:var(--card); border:1px solid var(--border); border-radius:14px; padding:22px;
+    animation: fadeUp .4s ease both;
+  }
+  .tip-icon { font-size:24px; margin-bottom:12px; }
+  .tip-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; margin-bottom:8px; }
+  .tip-body { font-size:12px; color:var(--muted); line-height:1.75; }
+
+  .progress-section { margin-bottom:24px; }
+  .progress-header { display:flex; justify-content:space-between; margin-bottom:6px; }
+  .progress-label { font-size:12px; color:var(--muted); }
+  .progress-val { font-size:12px; color:var(--text); }
+  .progress-bar { height:6px; background:var(--border); border-radius:100px; overflow:hidden; }
+  .progress-fill { height:100%; border-radius:100px; transition:width 1s ease; width:0; }
+
+  .rec-badge {
+    display:inline-block; font-size:10px; padding:2px 10px; border-radius:100px;
+    background:linear-gradient(130deg,var(--accent),var(--accent2));
+    color:#fff; letter-spacing:1px; text-transform:uppercase; margin-left:8px;
+    vertical-align:middle;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <header style="animation:fadeUp .5s ease both">
+    <div class="eyebrow">// React Roadmap · Job Edition</div>
+    <h1>What to build <span>next.</span></h1>
+    <p class="subtitle">You've got the fundamentals locked. These projects are chosen to impress recruiters, pass coding interviews, and fill your GitHub with work that matters.</p>
+    <div class="chips">
+      <span class="chip">Components & Props</span>
+      <span class="chip">useState & useEffect</span>
+      <span class="chip">React Router</span>
+      <span class="chip">Context / Redux</span>
+      <span class="chip">Fetch API</span>
+    </div>
+  </header>
+
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('projects',this)">Projects</button>
+    <button class="tab" onclick="showTab('compare',this)">Compare</button>
+    <button class="tab" onclick="showTab('tips',this)">Job Tips</button>
+  </div>
+
+  <!-- PROJECTS -->
+  <div id="tab-projects" class="tab-panel active">
+    <div style="margin-bottom:24px; font-size:12px; color:var(--muted);">Click any project to expand → features, skills demonstrated, and what recruiters notice.</div>
+    <div class="projects">
+
+      <div class="project-card" style="--card-accent:linear-gradient(90deg,#7c5cfc,#fc5c7d)" onclick="toggleCard(this)">
+        <div class="card-header">
+          <div class="card-icon">🛒</div>
+          <div class="card-meta">
+            <div class="card-title">E-Commerce Store <span class="rec-badge">Top Pick</span></div>
+            <div class="card-desc">Product listing with cart, filters, and checkout flow — the #1 project recruiters recognise instantly.</div>
+            <div class="badges">
+              <span class="badge diff-med">Medium</span>
+              <span class="badge time">3–5 days</span>
+              <span class="badge impact">High Impact</span>
+            </div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="expand-body">
+          <div class="section-label">Key Features to Build</div>
+          <ul class="feature-list">
+            <li>Product listing page with search + category filter</li>
+            <li>Add to cart / remove — managed with Context or Redux</li>
+            <li>Cart sidebar with quantity controls & running total</li>
+            <li>React Router for /products, /cart, /product/:id pages</li>
+            <li>Fetch products from FakeStoreAPI or DummyJSON</li>
+            <li>Fully responsive — mobile layout matters to reviewers</li>
+          </ul>
+          <div class="section-label">Skills Demonstrated</div>
+          <div class="skills-used">
+            <span class="skill-tag">Context / Redux</span>
+            <span class="skill-tag">React Router</span>
+            <span class="skill-tag">Fetch API</span>
+            <span class="skill-tag">useState / useEffect</span>
+            <span class="skill-tag">Component Architecture</span>
+          </div>
+          <div class="recruiter-box">
+            <p>🎯 <strong>Recruiter sees:</strong> Real-world state management, routing, and API integration — the exact stack used in 90% of frontend roles. This alone can get you a callback.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" style="--card-accent:linear-gradient(90deg,#5cfcb0,#5c9ffc)" onclick="toggleCard(this)">
+        <div class="card-header">
+          <div class="card-icon">🌤️</div>
+          <div class="card-meta">
+            <div class="card-title">Weather Dashboard</div>
+            <div class="card-desc">A clean weather app using a live public API — great for async skills and UI polish.</div>
+            <div class="badges">
+              <span class="badge diff-easy">Beginner-Friendly</span>
+              <span class="badge time">1–2 days</span>
+              <span class="badge impact">Solid Warmup</span>
+            </div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="expand-body">
+          <div class="section-label">Key Features to Build</div>
+          <ul class="feature-list">
+            <li>Search city → fetch live data from OpenWeatherMap API</li>
+            <li>Display temp, humidity, wind speed, weather icon</li>
+            <li>5-day forecast section updated via useEffect</li>
+            <li>Loading skeletons and error handling (city not found)</li>
+            <li>Toggle Celsius / Fahrenheit with useState</li>
+          </ul>
+          <div class="section-label">Skills Demonstrated</div>
+          <div class="skills-used">
+            <span class="skill-tag">Fetch API + async/await</span>
+            <span class="skill-tag">useEffect</span>
+            <span class="skill-tag">useState</span>
+            <span class="skill-tag">Error Handling</span>
+            <span class="skill-tag">Conditional Rendering</span>
+          </div>
+          <div class="recruiter-box">
+            <p>🎯 <strong>Recruiter sees:</strong> You can handle real APIs, loading states, and edge cases. Makes for a beautiful, easy-to-demo portfolio piece. Build this first.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" style="--card-accent:linear-gradient(90deg,#fcd95c,#fc925c)" onclick="toggleCard(this)">
+        <div class="card-header">
+          <div class="card-icon">🎬</div>
+          <div class="card-meta">
+            <div class="card-title">Movie Discovery App</div>
+            <div class="card-desc">Search and browse movies with TMDB API. Visually rich — lets you show off skills and taste.</div>
+            <div class="badges">
+              <span class="badge diff-med">Medium</span>
+              <span class="badge time">3–4 days</span>
+              <span class="badge impact">High Impact</span>
+            </div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="expand-body">
+          <div class="section-label">Key Features to Build</div>
+          <ul class="feature-list">
+            <li>Live search with debounced input (no API spam)</li>
+            <li>Movie detail page via React Router /movie/:id</li>
+            <li>Genre filter + trending section from TMDB</li>
+            <li>Watchlist — save to localStorage, manage with Context</li>
+            <li>Pagination or infinite scroll</li>
+          </ul>
+          <div class="section-label">Skills Demonstrated</div>
+          <div class="skills-used">
+            <span class="skill-tag">Fetch API</span>
+            <span class="skill-tag">React Router</span>
+            <span class="skill-tag">Context API</span>
+            <span class="skill-tag">useEffect + debounce</span>
+            <span class="skill-tag">Dynamic Routing</span>
+            <span class="skill-tag">localStorage</span>
+          </div>
+          <div class="recruiter-box">
+            <p>🎯 <strong>Recruiter sees:</strong> Dynamic routes, real pagination, persistent state — and it looks great in a live demo. TMDB's poster images make it immediately impressive.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card" style="--card-accent:linear-gradient(90deg,#fc5c7d,#9c5cfc)" onclick="toggleCard(this)">
+        <div class="card-header">
+          <div class="card-icon">✅</div>
+          <div class="card-meta">
+            <div class="card-title">Kanban Task Board</div>
+            <div class="card-desc">A Trello-style board with drag-and-drop. Shows you can handle complex UI interactions and state.</div>
+            <div class="badges">
+              <span class="badge diff-hard">Challenging</span>
+              <span class="badge time">4–6 days</span>
+              <span class="badge impact">Very High Impact</span>
+            </div>
+          </div>
+          <div class="arrow">⌄</div>
+        </div>
+        <div class="expand-body">
+          <div class="section-label">Key Features to Build</div>
+          <ul class="feature-list">
+            <li>3 columns: To Do, In Progress, Done</li>
+            <li>Add, edit, delete tasks with modal forms</li>
+            <li>Drag-and-drop between columns (@hello-pangea/dnd)</li>
+            <li>Filter by priority / label using Redux Toolkit</li>
+            <li>Persist all state to localStorage across refreshes</li>
+          </ul>
+          <div class="section-label">Skills Demonstrated</div>
+          <div class="skills-used">
+            <span class="skill-tag">Redux Toolkit</span>
+            <span class="skill-tag">Drag & Drop</span>
+            <span class="skill-tag">Complex State</span>
+            <span class="skill-tag">Modal UI</span>
+            <span class="skill-tag">localStorage</span>
+            <span class="skill-tag">Component Composition</span>
+          </div>
+          <div class="recruiter-box">
+            <p>🎯 <strong>Recruiter sees:</strong> Advanced state management and non-trivial UI — the kind of project that gets you shortlisted for mid-level roles even as a fresher.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div id="tab-compare" class="tab-panel">
+    <div class="table-wrap" style="margin-bottom:40px">
+      <table>
+        <thead>
+          <tr>
+            <th>Project</th>
+            <th>Difficulty</th>
+            <th>Time</th>
+            <th>Portfolio Impact</th>
+            <th>Interview Value</th>
+            <th>Order</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="proj-name">🌤️ Weather Dashboard</span></td>
+            <td><span class="badge diff-easy" style="font-size:10px">Easy</span></td>
+            <td>1–2 days</td>
+            <td><span class="dot med"></span> Medium</td>
+            <td><span class="star">★★★☆☆</span></td>
+            <td>① First</td>
+          </tr>
+          <tr>
+            <td><span class="proj-name">🛒 E-Commerce Store</span></td>
+            <td><span class="badge diff-med" style="font-size:10px">Medium</span></td>
+            <td>3–5 days</td>
+            <td><span class="dot high"></span> High</td>
+            <td><span class="star">★★★★★</span></td>
+            <td>② Flagship</td>
+          </tr>
+          <tr>
+            <td><span class="proj-name">🎬 Movie Discovery</span></td>
+            <td><span class="badge diff-med" style="font-size:10px">Medium</span></td>
+            <td>3–4 days</td>
+            <td><span class="dot high"></span> High</td>
+            <td><span class="star">★★★★☆</span></td>
+            <td>③ Portfolio +1</td>
+          </tr>
+          <tr>
+            <td><span class="proj-name">✅ Kanban Board</span></td>
+            <td><span class="badge diff-hard" style="font-size:10px">Hard</span></td>
+            <td>4–6 days</td>
+            <td><span class="dot high"></span> Very High</td>
+            <td><span class="star">★★★★★</span></td>
+            <td>④ Stretch</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="eyebrow">// Skill Readiness</div>
+    <div style="font-family:'Syne',sans-serif; font-size:20px; font-weight:700; margin-bottom:24px">Your skills vs. what jobs require</div>
+
+    <div class="progress-section">
+      <div class="progress-header"><span class="progress-label">State Management (Context/Redux)</span><span class="progress-val">85%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-width="85%" style="background:linear-gradient(90deg,#7c5cfc,#fc5c7d)"></div></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-header"><span class="progress-label">API Integration (Fetch)</span><span class="progress-val">80%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-width="80%" style="background:linear-gradient(90deg,#5cfcb0,#5c9ffc)"></div></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-header"><span class="progress-label">Routing & Navigation</span><span class="progress-val">80%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-width="80%" style="background:linear-gradient(90deg,#fcd95c,#fc925c)"></div></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-header"><span class="progress-label">TypeScript (gap — learn next)</span><span class="progress-val">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-width="5%" style="background:linear-gradient(90deg,#fc5c7d,#fc925c)"></div></div>
+    </div>
+    <div class="progress-section">
+      <div class="progress-header"><span class="progress-label">Testing / Jest (gap — learn after)</span><span class="progress-val">0%</span></div>
+      <div class="progress-bar"><div class="progress-fill" data-width="5%" style="background:linear-gradient(90deg,#fc5c7d,#fc925c)"></div></div>
+    </div>
+    <p style="margin-top:10px; font-size:12px; color:var(--muted); line-height:1.8">💡 After your first project, adding <strong style="color:var(--text)">TypeScript</strong> and basic <strong style="color:var(--text)">Jest / React Testing Library</strong> will push you ahead of most applicants.</p>
+  </div>
+
+  <!-- TIPS -->
+  <div id="tab-tips" class="tab-panel">
+    <div style="margin-bottom:24px; font-size:12px; color:var(--muted)">The project is only 50% of the battle — here's what actually gets you hired.</div>
+    <div class="tips-grid">
+      <div class="tip-card">
+        <div class="tip-icon">📁</div>
+        <div class="tip-title">Write a real README</div>
+        <div class="tip-body">Include a demo GIF, setup instructions, tech stack, and what you'd add next. Recruiters skim GitHub — a polished README doubles your chances.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🚀</div>
+        <div class="tip-title">Deploy everything</div>
+        <div class="tip-body">Use Vercel or Netlify. A live link on your resume is 10× more effective than a GitHub link. Takes 5 minutes per project.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧱</div>
+        <div class="tip-title">Show clean commits</div>
+        <div class="tip-body">Commit incrementally with clear messages like "feat: add cart context". Reviewers look at your history — it shows how you actually think.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">📐</div>
+        <div class="tip-title">TypeScript next</div>
+        <div class="tip-body">After your first project, rewrite one feature in TypeScript. Knowing TS is now a baseline expectation at most companies — even for juniors.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🧪</div>
+        <div class="tip-title">Add one test file</div>
+        <div class="tip-body">Just one component with React Testing Library lets you write "familiar with unit testing" on your resume — and it signals genuine maturity.</div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon">🎯</div>
+        <div class="tip-title">Build in public</div>
+        <div class="tip-body">Post short updates on LinkedIn as you build. "Just shipped cart functionality in my React store" — hiring managers follow developers who build in public.</div>
+      </div>
+    </div>
+
+    <div style="margin-top:36px; background:var(--card); border:1px solid rgba(124,92,252,0.25); border-radius:16px; padding:28px">
+      <div class="eyebrow">// Suggested Timeline</div>
+      <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700; margin-bottom:20px">4-Week Sprint to Job-Ready</div>
+      <div style="display:grid; gap:16px; font-size:12px; line-height:1.8">
+        <div style="display:flex; gap:16px">
+          <span style="color:var(--accent); font-weight:700; min-width:64px">Week 1</span>
+          <span style="color:var(--muted)">Build the <strong style="color:var(--text)">Weather Dashboard</strong> — warm up, get comfortable with live APIs and deployment on Vercel.</span>
+        </div>
+        <div style="display:flex; gap:16px">
+          <span style="color:var(--accent2); font-weight:700; min-width:64px">Week 2–3</span>
+          <span style="color:var(--muted)">Build the <strong style="color:var(--text)">E-Commerce Store</strong> — your flagship. Polish it. Deploy it. Write the README. This is your #1 portfolio piece.</span>
+        </div>
+        <div style="display:flex; gap:16px">
+          <span style="color:var(--accent3); font-weight:700; min-width:64px">Week 4</span>
+          <span style="color:var(--muted)">Add <strong style="color:var(--text)">TypeScript</strong> to the store, write 2–3 tests, and start applying. Build the Movie or Kanban app alongside applications.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(name, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    btn.classList.add('active');
+    if (name === 'compare') animateBars();
+  }
+
+  function toggleCard(card) {
+    const wasOpen = card.classList.contains('open');
+    document.querySelectorAll('.project-card').forEach(c => c.classList.remove('open'));
+    if (!wasOpen) card.classList.add('open');
+  }
+
+  function animateBars() {
+    setTimeout(() => {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        bar.style.width = bar.getAttribute('data-width');
+      });
+    }, 100);
+  }
+</script>
+</body>
+</html>
